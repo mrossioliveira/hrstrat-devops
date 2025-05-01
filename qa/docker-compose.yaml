@@ -19,7 +19,6 @@ services:
   backend:
     image: 764615761561.dkr.ecr.us-east-1.amazonaws.com/ebs-hrstrat/backend:latest
     hostname: backend
-    container_name: backend
     depends_on:
       - postgres
     env_file:
