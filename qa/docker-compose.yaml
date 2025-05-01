@@ -20,6 +20,7 @@ services:
   backend:
     image: 764615761561.dkr.ecr.us-east-1.amazonaws.com/ebs-hrstrat/backend:latest
     hostname: backend
+    container_name: backend
     restart: unless-stopped
     depends_on:
       - postgres
@@ -48,6 +49,7 @@ services:
   frontend:
     image: 764615761561.dkr.ecr.us-east-1.amazonaws.com/ebs-hrstrat/frontend:latest
     hostname: frontend
+    container_name: frontend
     restart: unless-stopped
     depends_on:
       - backend
