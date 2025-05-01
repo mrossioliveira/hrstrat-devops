@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  # PostgreSQL 16 service
+  postgres:
+    image: postgres:16
+    restart: unless-stopped
+    env_file:
+      - .postgres.env
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./postgres/init-schemas.sql:/docker-entrypoint-initdb.d/init-schemas.sql
+    ports:
+      - "5432:5432"
+    networks:
+      - hrstrat-network
+
+  # Spring Boot backend service
+  backend:
+    image: 764615761561.dkr.ecr.us-east-1.amazonaws.com/ebs-hrstrat/backend:latest
+    restart: unless-stopped
+    depends_on:
+      - postgres
+    env_file:
+      - .backend.env
+    networks:
+      - hrstrat-network
+
+  # Nginx reverse proxy service
+  nginx-proxy:
+    image: nginx:alpine
+    container_name: nginx-proxy
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+    depends_on:
+      - backend
+      - frontend
+    networks:
+      - app_network
+
+  # Angular frontend service
+  frontend:
+    image: 764615761561.dkr.ecr.us-east-1.amazonaws.com/ebs-hrstrat/frontend:latest
+    restart: unless-stopped
+    depends_on:
+      - backend
+    networks:
+      - hrstrat-network
+
+networks:
+  hrstrat-network:
+    driver: overlay
+
+volumes:
+  postgres_data:
