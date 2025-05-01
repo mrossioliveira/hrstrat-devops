@@ -29,17 +29,17 @@ services:
   # Nginx reverse proxy service
   nginx-proxy:
     image: nginx:alpine
-    container_name: nginx-proxy
+    restart: unless-stopped
+    depends_on:
+      - backend
+      - frontend
     ports:
       - "80:80"
       - "443:443"
     volumes:
       - ./nginx/conf.d:/etc/nginx/conf.d
-    depends_on:
-      - backend
-      - frontend
     networks:
-      - app_network
+      - hrstrat-network
 
   # Angular frontend service
   frontend:
