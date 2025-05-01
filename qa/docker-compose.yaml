@@ -4,6 +4,7 @@ services:
   # PostgreSQL 16 service
   postgres:
     image: postgres:16
+    hostname: postgres
     restart: unless-stopped
     env_file:
       - .postgres.env
@@ -18,6 +19,7 @@ services:
   # Spring Boot backend service
   backend:
     image: 764615761561.dkr.ecr.us-east-1.amazonaws.com/ebs-hrstrat/backend:latest
+    hostname: backend
     restart: unless-stopped
     depends_on:
       - postgres
@@ -29,6 +31,7 @@ services:
   # Nginx reverse proxy service
   nginx-proxy:
     image: nginx:alpine
+    hostname: nginx-proxy
     restart: unless-stopped
     depends_on:
       - backend
@@ -44,6 +47,7 @@ services:
   # Angular frontend service
   frontend:
     image: 764615761561.dkr.ecr.us-east-1.amazonaws.com/ebs-hrstrat/frontend:latest
+    hostname: frontend
     restart: unless-stopped
     depends_on:
       - backend
